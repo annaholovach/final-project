@@ -5,7 +5,7 @@ module.exports = new Sequelize(
     process.env.DB_USER,
     process.env.DB_PASSWORD,
     {
-        dialect: 'mssql',
+        dialect: 'postgres',
         host: process.env.DB_HOST,
     }
 )

@@ -1,11 +1,16 @@
-const {Type} = require('../models/models')
+const {Dog} = require('../models/models')
 const ApiError = require('../error/ApiError')
+const {validationResult} = require('express-validator')
 
 class DogController {
-    async create (req, res, next) {
+    async createDog (req, res, next) {
         try{
-            const {name} = req.body
-            const type = await Type.create({name})
+            const errors = validationResult(req)
+            if (!errors.isEmpty()) {
+                return res.status(400).json({message: 'Creating error'})
+            }
+            const {name, color, tail_length, weight} = req.body
+            const type = await Dog.create({name, color, tail_length, weight})
             return res.json(type)
         }catch(e) {
             next(ApiError.BadRequest(e.message))
@@ -14,7 +19,7 @@ class DogController {
 
     async getAll (req, res, next) {
         try{
-            const types = await Type.findAll()
+            const types = await Dog.findAll() 
             return res.json(types)
             
         }catch(e) {
@@ -26,6 +31,7 @@ class DogController {
         const query = req.query
         res.json(query)
     }
+
 }
 
 module.exports = new DogController()
