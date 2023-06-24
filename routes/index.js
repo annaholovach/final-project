@@ -1,8 +1,8 @@
 const Router = require('express')
 const router = new Router()
-const dogsRouter = require('./dogsRouter')
+const animalsRouter = require('./animalsRouter')
 
-router.use('/', dogsRouter)
+router.use('/home', animalsRouter)
 
 
 module.exports = router

@@ -1,12 +1,13 @@
 const sequelize = require('../db')
 const {DataTypes} = require('sequelize')
 
-const Dog = sequelize.define('dog', {
+const Animal = sequelize.define('animal', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     name: {type: DataTypes.STRING, unique: true}, 
+    sex: {type: DataTypes.STRING},
     color: {type: DataTypes.STRING},
-    tail_length: {type: DataTypes.INTEGER},
-    weight: {type: DataTypes.INTEGER},
+    type: {type: DataTypes.STRING},
+    age: {type: DataTypes.INTEGER},
 });
 
-module.exports = {Dog}
+module.exports = {Animal}
