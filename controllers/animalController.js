@@ -1,7 +1,6 @@
 const {Animal} = require('../models/models')
 const ApiError = require('../error/ApiError')
 const {validationResult} = require('express-validator')
-import {AnimalServise} from '../services/animalService'
 
 class AnimalController {
     async create (req, res, next) {
@@ -24,7 +23,7 @@ class AnimalController {
             return res.status(200).json(types)
             
         }catch(e) {
-            next(ApiError.internal(e.message))
+            next(ApiError.BadRequest(e.message))
         }
     }
 
@@ -34,21 +33,29 @@ class AnimalController {
             const candidate = await Animal.findOne({
                 where: {id}
             });
+            if(candidate === null) {
+                return res.status(404).json({message: 'Not found'})
+            }
             return res.status(200).json(candidate);
         }catch(e) {
-            next(ApiError.internal(e.message))
+            next(ApiError.BadRequest(e.message))
         }
     }
-
-    async update (req, res, next) {
+    
+    async update(req, res, next) {
         try {
-            const {} = req.body;
-            const updatedAnimal = await Animal.update({
-                where: {name, sex, color, type, age}
+            const { id, ...animal } = req.body
+            const updatedAnimal = await Animal.update(animal, {
+                where: { id },
+                returning: true,
+                new: true
             })
-            return res.status(200).json(updatedAnimal);
-        } catch (e) {
-            next(ApiError.internal(e.message))
+            if (updatedAnimal[0] === 0) {
+                return res.status(404).json({ error: 'Animal not found' })
+            }
+            return res.status(200).json(updatedAnimal[1][0])
+        } catch (error) {
+            next(ApiError.internal(error.message))
         }
     }
 
